@@ -1,63 +1,3 @@
-ko.bindingHandlers['attr-ns'] = {
-  update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-    ko.utils.objectForEach( ko.unwrap( valueAccessor() ), function(name, value){
-      var prefixLen = name.indexOf(':');
-      var prefix    = name.substr( 0, prefixLen );
-      var namespace = prefixLen < 0 ? null : element.lookupNamespaceURI( prefix );
-
-      element.setAttributeNS( namespace, name, ko.unwrap( value ) );
-    });
-  }
-};
-
-ko.bindingHandlers['draggable'] = {
-	init: function (element, valueAccessor) {
-		var svg = document.getElementById("svg");
-		element.onmousedown = function (evt) {
-			element.dragged = true;
-		};
-		svg.addEventListener('mouseup', function (evt) {
-			element.dragged = false;
-		});
-		svg.addEventListener('mousemove', function (evt) {
-			 if(element.dragged) {
-			 	ko.unwrap(valueAccessor()).X(evt.clientX);
-			 	ko.unwrap(valueAccessor()).Y(evt.clientY)
-			 }
-		});
-	},
-	update: function (element, valueAccessor) {
-		element.setAttribute('cx', ko.unwrap(valueAccessor()).X());
-		element.setAttribute('cy', ko.unwrap(valueAccessor()).Y());
-	}
-};
-
-var model = {
-	Nodes: [
-		{ Id:1, Name:"Node Person1", Type:"Person", X: 100, Y: 50 },
-		{ Id:2, Name:"Node Person2", Type:"Person", X: 150, Y:150 },
-		{ Id:3, Name:"Node Person3", Type:"Person", X: 500, Y: 150 },
-
-		{ Id:4, Name:"Lviv", Type:"Place", X: 100, Y: 400 },
-		{ Id:5, Name:"Intellias Zelena", Type:"Place", X: 650, Y: 350 },
-		{ Id:6, Name:"Intellias Luganska", Type:"Place", X: 350, Y: 450 },
-
-		{ Id:11, Name:"Party", Type:"Event", Text: "at 21/01/2014", X: 700, Y: 550 }
-
-	],
-	Links: [ 
-		{Id:7, Type: "Located at", Source: 5, Destination: 4 },
-		{Id:8, Type: "Located at", Source: 6, Destination: 4 },
-		{Id:9, Type: "Located at", Source: 1, Destination: 5 },
-		{Id:10, Type: "Located at", Source: 2, Destination: 6 },
-
-		{Id:12, Type: "Located at", Source: 11, Destination: 6 },
-
-		{Id:13, Type: "Participated in", Source: 2, Destination: 11 }
-	]
-	
-};
-
 
 var create_Coord = function (x, y) {
 	return ko.observable({
@@ -83,23 +23,81 @@ var Link = function (raw, coordSrc, coordDest) {
 	});
 };
 
-var graph = {
+var Graph = function (raw) {
+	var self = this;
 
-	table: {},
-	links: ko.observableArray(),
-	nodes: ko.observableArray(),
-}
+	self.table = {};
+	self.links = ko.observableArray();
+	self.nodes = ko.observableArray();
+	self.activeNode = ko.observable();
+	self.inprocessLink = {
+		source: ko.observable(),
+		destination: ko.observable()
+	}
 
-for(var i = 0; i < model.Nodes.length; i++) {
-	var coord = create_Coord(model.Nodes[i].X, model.Nodes[i].Y);
-	graph.table[model.Nodes[i].Id] = coord;
-	graph.nodes.push(new Node(model.Nodes[i], coord));
-}
+	self.fakeId = function () {
+		var text = "",
+			possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		for(var i = 0; i < 5; i++) {
+			text += possible.charAt(Math.floor(Math.random() * possible.length));
+		}
+		return text;
+	}
 
-for(var i = 0; i < model.Links.length; i++) {
-	var coordSrc = graph.table[model.Links[i].Source],
-		coordDest = graph.table[model.Links[i].Destination];
-	graph.links.push(new Link(model.Links[i], coordSrc, coordDest));
-}
+	self.setActiveNode =  function (node) {
+		self.activeNode(node);
+	};
 
-ko.applyBindings(graph);
+	self.pushNode = function (rawNode) {		
+		var coord = create_Coord(rawNode.X, rawNode.Y);
+		this.table[rawNode.Id] = coord;
+		this.nodes.push(new Node(rawNode, coord));
+	};
+
+	self.pushLink = function (rawLink) {
+		var coordSrc = self.table[rawLink.Source],
+			coordDest = self.table[rawLink.Destination];
+		self.links.push(new Link(rawLink, coordSrc, coordDest));
+	};
+
+	self.addLink = function () {
+		var rawLink = {
+			Type: 'some type',
+			Source: self.inprocessLink.source(),
+			Destination: self.inprocessLink.destination()
+		};
+		self.pushLink(rawLink);
+	};
+
+	self.startLink = function (nodeId) {
+		self.inprocessLink.source(nodeId);
+	};
+
+	self.endLink = function (nodeId) {
+		if(nodeId !== self.inprocessLink.source()) {
+			self.inprocessLink.destination(nodeId);
+			self.addLink();
+			self.inprocessLink.source(null);
+			self.inprocessLink.destination(null);
+		}
+	};
+
+	(function ctor () {
+		for(var i = 0; i < raw.Nodes.length; i++) {	
+			self.pushNode(raw.Nodes[i]);
+		}
+		for(var i = 0; i < raw.Links.length; i++) {
+			self.pushLink(raw.Links[i]);
+		}
+	})();
+};
+
+
+(function application_start () {
+
+	var model = dataservice.get(),
+		viewmodel = new Graph(model);
+
+	ko.applyBindings(viewmodel);
+
+})();

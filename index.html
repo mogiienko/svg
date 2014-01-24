@@ -2,7 +2,8 @@
 <html>
 <head>
 	<title>Neo</title>
-	<link rel="stylesheet" type="text/css" href="graph.css">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="css/graph.css">
 </head>
 <body>
 	<svg xmlns:xlink="http://www.w3.org/1999/xlink" id="svg" width="800px" height="600px" viewBox="0 0 800 600">
@@ -12,7 +13,7 @@
   				markerWidth="7" markerHeight="7">
   				<polyline points="0,0 10,5 0,10 1,5" class="link"/>
 			</marker>
-		</defs>
+		</defs>		
 		
 		<!-- ko foreach: links -->
 		<g>
@@ -27,7 +28,7 @@
 
 		<!-- ko foreach: nodes -->
 		<g>			
-			<circle r="10" class="node" data-bind="draggable: Coord, attr: { id: Id }" />
+			<circle r="10" data-bind="draggable: Coord, linkable: Id, click: $parent.setActiveNode, attr: { id: Id, class: $data === $parent.activeNode() ? 'node_active' : 'node' }" />
 			<text dy="-17" class="node__text" data-bind="attr: { x: Coord().X, y: Coord().Y }">
 				<!--ko text: Name--><!--/ko-->
 			</text>
@@ -35,7 +36,24 @@
 		<!-- /ko -->
 	</svg>
 
+	<form class="form-horizontal" role="form" data-bind="if: activeNode">
+		<div class="form-group">
+			<label for="lblNodeName" class="col-sm-2 control-label">Name</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="lblNodeName" placeholder="Name" data-bind="value: activeNode().Name">
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="lblNodeType" class="col-sm-2 control-label">Type</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="lblNodeType" placeholder="Type" data-bind="value: activeNode().Type">
+			</div>
+		</div>				
+	</form>
+
 	<script type="text/javascript" src="lib/knockout-3.0.0.js"></script>
+	<script type="text/javascript" src="ko.bindings.js"></script>
+	<script type="text/javascript" src="dataservice.js"></script>
 	<script type="text/javascript" src="graph.js"></script>
 </body>
 </html>

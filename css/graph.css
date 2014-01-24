@@ -6,8 +6,14 @@
 	stroke: rgb(253, 117, 33);
 	fill:  rgb(253, 117, 33);
 }
+.node_active {
+	fill: rgb(166, 226, 46);
+}
+.node_active ~ .node__text {
+	fill: rgb(166, 226, 46);
+}
 .node__text {
-	stroke: rgb(134, 134, 134);
+	fill: rgb(134, 134, 134);
 	font-family: "Arial";
 	font-size: 9px;
 	-webkit-user-select: none;
@@ -19,12 +25,13 @@
 }
 
 .link {
-	stroke: rgb(253, 117, 33);
-	fill: rgb(253, 117, 33);
+	/*stroke: rgb(253, 117, 33);*/
+	stroke: rgb(117, 50, 0);
+	fill: rgb(117, 50, 0);
 	stroke-width: 1;
 }
 .link__text {
-	stroke: rgb(134, 134, 134);
+	fill: rgb(134, 134, 134);
 	font-family: "Arial";
 	font-size: 9px;
 	-webkit-user-select: none;
