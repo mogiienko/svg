@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Neo</title>
+	<link rel="stylesheet" type="text/css" href="graph.css">
+</head>
+<body>
+	<svg xmlns:xlink="http://www.w3.org/1999/xlink" id="svg" width="800px" height="600px" viewBox="0 0 800 600">
+		<defs>				
+    		<marker id="arrow" viewBox="0 0 10 10" refX="24" refY="5"
+    			markerUnits="userSpaceOnUse" orient="auto"
+  				markerWidth="7" markerHeight="7">
+  				<polyline points="0,0 10,5 0,10 1,5" class="link"/>
+			</marker>
+		</defs>
+		
+		<!-- ko foreach: links -->
+		<g>
+			<path marker-end="url(#arrow)" class="link" data-bind="attr: { id: Id, d: Points }" />
+			<text text-anchor="middle" dy="-3" class="link__text">
+				<textPath startOffset="50%" data-bind="attr-ns: { 'xlink:href': '#' + Id() }">	
+					<!--ko text: Type--><!--/ko-->
+				</textPath>
+			</text>
+		</g>
+		<!-- /ko -->
+
+		<!-- ko foreach: nodes -->
+		<g>			
+			<circle r="10" class="node" data-bind="draggable: Coord, attr: { id: Id }" />
+			<text dy="-17" class="node__text" data-bind="attr: { x: Coord().X, y: Coord().Y }">
+				<!--ko text: Name--><!--/ko-->
+			</text>
+		</g>
+		<!-- /ko -->
+	</svg>
+
+	<script type="text/javascript" src="lib/knockout-3.0.0.js"></script>
+	<script type="text/javascript" src="graph.js"></script>
+</body>
+</html>

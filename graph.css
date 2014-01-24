@@ -1,0 +1,36 @@
+#svg {
+	background-color: rgb(39, 40, 34);
+}
+
+.node {
+	stroke: rgb(253, 117, 33);
+	fill:  rgb(253, 117, 33);
+}
+.node__text {
+	stroke: rgb(134, 134, 134);
+	font-family: "Arial";
+	font-size: 9px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	pointer-events: none;
+}
+
+.link {
+	stroke: rgb(253, 117, 33);
+	fill: rgb(253, 117, 33);
+	stroke-width: 1;
+}
+.link__text {
+	stroke: rgb(134, 134, 134);
+	font-family: "Arial";
+	font-size: 9px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	pointer-events: none;
+}
