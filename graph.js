@@ -1,3 +1,14 @@
+var Mouse = function () {
+	var self = this;
+
+	self.X = ko.observable();
+	self.Y = ko.observable();
+
+	document.querySelector('#svg').addEventListener('mousemove', function (evt) {
+		self.X(evt.clientX);
+		self.Y(evt.clientY);
+	});
+};
 
 var create_Coord = function (x, y) {
 	return ko.observable({
@@ -27,12 +38,17 @@ var Graph = function (raw) {
 	var self = this;
 
 	self.table = {};
+	self.mouse = new Mouse();
 	self.links = ko.observableArray();
 	self.nodes = ko.observableArray();
 	self.activeNode = ko.observable();
 	self.inprocessLink = {
 		source: ko.observable(),
-		destination: ko.observable()
+		destination: ko.observable(),
+		srcX: ko.observable(),
+		srcY: ko.observable(),
+		dstX: ko.observable(),
+		dstY: ko.observable()
 	};	
 
 	self.setActiveNode =  function (node) {
@@ -62,6 +78,8 @@ var Graph = function (raw) {
 
 	self.startLink = function (nodeId) {
 		self.inprocessLink.source(nodeId);
+		self.inprocessLink.srcX(self.table[nodeId]().X());
+		self.inprocessLink.srcY(self.table[nodeId]().Y());
 	};
 
 	self.endLink = function (nodeId) {
