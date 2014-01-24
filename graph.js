@@ -33,16 +33,7 @@ var Graph = function (raw) {
 	self.inprocessLink = {
 		source: ko.observable(),
 		destination: ko.observable()
-	}
-
-	self.fakeId = function () {
-		var text = "",
-			possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-		for(var i = 0; i < 5; i++) {
-			text += possible.charAt(Math.floor(Math.random() * possible.length));
-		}
-		return text;
-	}
+	};	
 
 	self.setActiveNode =  function (node) {
 		self.activeNode(node);

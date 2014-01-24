@@ -29,6 +29,15 @@ var dataservice = (function () {
 		};
 	};
 
+	ds.getNewId = function () {
+		var text = "",
+			possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		for(var i = 0; i < 5; i++) {
+			text += possible.charAt(Math.floor(Math.random() * possible.length));
+		}
+		return text;
+	}
+
 	return ds;
 
 })();

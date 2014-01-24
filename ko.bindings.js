@@ -52,7 +52,7 @@
 			svg.addEventListener('contextmenu', function(evt) {
 				if(evt.button === 2 && bindingContext.$root.inprocessLink.source() !== null) {
 					var rawNode = {
-						Id: bindingContext.$root.fakeId(),
+						Id: dataservice.getNewId(),
 						Name: 'Bla-bla',
 						X: evt.clientX,
 						Y: evt.clientY

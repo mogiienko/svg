@@ -13,7 +13,7 @@
   				markerWidth="7" markerHeight="7">
   				<polyline points="0,0 10,5 0,10 1,5" class="link"/>
 			</marker>
-		</defs>		
+		</defs>
 		
 		<!-- ko foreach: links -->
 		<g>
@@ -28,7 +28,10 @@
 
 		<!-- ko foreach: nodes -->
 		<g>			
-			<circle r="10" data-bind="draggable: Coord, linkable: Id, click: $parent.setActiveNode, attr: { id: Id, class: $data === $parent.activeNode() ? 'node_active' : 'node' }" />
+			<circle r="10" data-bind="draggable: Coord, linkable: Id, click: $parent.setActiveNode, attr: { id: Id, class: $data === $parent.activeNode() ? 'node_active' : 'node' }">
+				<animate attributeName="r" begin="click" to="15" dur="0.15s" fill="freeze" />
+				<animate attributeName="r" begin="click" to="10" dur="0.15s" fill="freeze" />
+			</circle>
 			<text dy="-17" class="node__text" data-bind="attr: { x: Coord().X, y: Coord().Y }">
 				<!--ko text: Name--><!--/ko-->
 			</text>
